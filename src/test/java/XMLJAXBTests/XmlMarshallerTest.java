@@ -1,5 +1,7 @@
 package XMLJAXBTests;
 
+import XMLJAXBTests.TestClasses.Employee;
+import com.netcracker.jaxb.context.JAXBContext;
 import org.junit.Test;
 
 /**
@@ -10,6 +12,6 @@ public class XmlMarshallerTest {
 
     @Test
     public void MarshallingClassToXMLTest(){
-
+        JAXBContext ctx = new JAXBContext(Employee.class);
     }
 }
