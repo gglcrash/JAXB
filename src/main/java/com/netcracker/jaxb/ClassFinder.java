@@ -27,7 +27,13 @@ public class ClassFinder {
             String className = null;
 
             if (fileName.endsWith(".class")) {
-                className = pkgname.substring(1) + '.' + fileName.substring(0, fileName.length() - 6);
+                if(pkgname.startsWith(".classes")) {
+                    className = pkgname.substring(9) + '.' + fileName.substring(0, fileName.length() - 6);
+                }
+                if(pkgname.startsWith(".test-classes")){
+                    className = fileName.substring(0, fileName.length() - 6);
+                    int x = 2;
+                }
             }
 
             if (className != null) {
