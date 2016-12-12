@@ -1,6 +1,7 @@
 package com.netcracker.jaxb;
 
 import com.netcracker.jaxb.annotations.Component;
+import com.netcracker.jaxb.annotations.db.processors.LoadFromDbAnnotationProcessor;
 import com.netcracker.jaxb.annotations.db.processors.WriteToDbAnnotationProcessor;
 import com.netcracker.jaxb.annotations.db.processors.Processor;
 
@@ -17,6 +18,7 @@ public class ApplicationContext {
     private ApplicationContext() {
         components =  ClassFinder.getClassesFromPackage(new File("target\\"),"", Component.class);
         analyzers.add(new WriteToDbAnnotationProcessor());
+        analyzers.add(new LoadFromDbAnnotationProcessor());
     }
 
     public static ApplicationContext getInstance() {
