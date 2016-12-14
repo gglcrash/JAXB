@@ -7,22 +7,35 @@ import java.sql.*;
 public class MyConnection {
 
     private static Connection connection = null;
-    private String url = "jdbc:postgresql://localhost:5432/JAXB";
-    private String name = "postgres";
-    private String password = "";
+    private String url;
+    private String name;
+    private String password;
     private PreparedStatement preparedStatement = null;
     private static MyConnection instance = null;
-    public static MyConnection getInstance(){
+    public static MyConnection getInstance(String conn){
         if(instance == null){
-            instance = new MyConnection();
+            instance = new MyConnection(conn);
         }
         return instance;
     }
 
-    private void setConnection() {
+    private MyConnection(String conn){
+        String[] splited = conn.split("\\s+");
+
+        url = splited[0];
+        name = splited[1];
+        if(splited.length>2) {
+            password = splited[2];
+        }
+
+    }
+
+    public void setConnection() {
         try {
             Class.forName("org.postgresql.Driver");
          //   System.out.println("Драйвер подключен");
+
+
             connection = DriverManager.getConnection(url, name, password);
          //   System.out.println("Соединение установлено");
         } catch (ClassNotFoundException e) {

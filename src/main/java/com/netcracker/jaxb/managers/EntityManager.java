@@ -17,9 +17,10 @@ public class EntityManager {
         }
     }
 
-    public void marshall(){
+    public void marshall(Object clazz){
     }
 
-    public void unmarshall(){
+    public void unmarshall(Object clazz){
     }
+
 }
