@@ -8,12 +8,12 @@ public class XmlManager extends EntityManager{
 
 
     @Override
-    public void marshall() {
-        super.marshall();
+    public void marshall(Object clazz) {
+
     }
 
     @Override
-    public void unmarshall() {
-        super.unmarshall();
+    public void unmarshall(Object clazz) {
+
     }
 }
