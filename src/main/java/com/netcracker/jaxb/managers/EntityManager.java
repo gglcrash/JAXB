@@ -2,6 +2,8 @@ package com.netcracker.jaxb.managers;
 
 public class EntityManager {
 
+    protected EntityManager(){}
+
     public static EntityManager getInstance(String path, ConnectionType type){
         switch (type){
             case DB: {
@@ -15,9 +17,9 @@ public class EntityManager {
         }
     }
 
-    protected void marshall(){
+    public void marshall(){
     }
 
-    protected void unmarshall(){
+    public void unmarshall(){
     }
 }

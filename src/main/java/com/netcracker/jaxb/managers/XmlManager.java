@@ -13,7 +13,7 @@ public class XmlManager extends EntityManager{
     }
 
     @Override
-    protected void unmarshall() {
+    public void unmarshall() {
         super.unmarshall();
     }
 }
