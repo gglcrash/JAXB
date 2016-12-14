@@ -1,4 +1,4 @@
-package com.netcracker.jaxb.annotations.db.processors;
+package com.netcracker.jaxb.annotations;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -12,7 +12,7 @@ public class MyConnection {
     private String password = "";
     private PreparedStatement preparedStatement = null;
     private static MyConnection instance = null;
-    public static MyConnection getConnection(){
+    public static MyConnection getInstance(){
         if(instance == null){
             instance = new MyConnection();
         }

@@ -2,7 +2,7 @@ package com.netcracker.jaxb.templates;
 
 import com.netcracker.jaxb.annotations.Component;
 
-@Component("ClassA")
+@Component("Ship")
 public class Ship {
     private int x;
     private int y;
