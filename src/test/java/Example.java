@@ -1,6 +1,8 @@
 import com.netcracker.jaxb.ApplicationContext;
 import com.netcracker.jaxb.annotations.db.LoadFromDb;
 import com.netcracker.jaxb.annotations.db.WriteToDb;
+import com.netcracker.jaxb.managers.ConnectionType;
+import com.netcracker.jaxb.managers.EntityManager;
 import com.netcracker.jaxb.templates.Ship;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,5 +27,8 @@ public class Example {
         System.out.println("Ship name: "+loadShip.getName()+"\n");
         System.out.println("X coordinate: "+loadShip.getX()+"\n");
         System.out.println("Y coordinate: "+loadShip.getY()+"\n");
+
+        EntityManager ent = EntityManager.getInstance("", ConnectionType.DB);
+        ent.marshall();
     }
 }

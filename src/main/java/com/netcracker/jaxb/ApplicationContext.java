@@ -3,7 +3,7 @@ package com.netcracker.jaxb;
 import com.netcracker.jaxb.annotations.Component;
 import com.netcracker.jaxb.annotations.db.processors.LoadFromDbAnnotationProcessor;
 import com.netcracker.jaxb.annotations.db.processors.WriteToDbAnnotationProcessor;
-import com.netcracker.jaxb.annotations.db.processors.Processor;
+import com.netcracker.jaxb.annotations.Processor;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

@@ -2,8 +2,7 @@ package com.netcracker.jaxb.annotations.db.processors;
 
 import com.netcracker.jaxb.ApplicationContext;
 import com.netcracker.jaxb.annotations.db.LoadFromDb;
-import com.netcracker.jaxb.annotations.db.WriteToDb;
-import com.netcracker.jaxb.annotations.db.processors.Processor;
+import com.netcracker.jaxb.annotations.Processor;
 import com.netcracker.jaxb.jdbc.MyConnection;
 import com.netcracker.jaxb.templates.Ship;
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
 public class LoadFromDbAnnotationProcessor implements Processor {
 
     public LoadFromDbAnnotationProcessor(){
-        connection = MyConnection.getConnection();
+        connection = MyConnection.getInstance();
     }
 
     MyConnection connection;
