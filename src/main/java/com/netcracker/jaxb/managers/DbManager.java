@@ -3,7 +3,8 @@ package com.netcracker.jaxb.managers;
 import com.netcracker.jaxb.ApplicationContext;
 import com.netcracker.jaxb.annotations.RootElement;
 import com.netcracker.jaxb.jdbc.MyConnection;
-import com.netcracker.jaxb.templates.Ship;
+import com.netcracker.jaxb.templates.case1.Ship;
+import com.netcracker.jaxb.templates.case2.University;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +49,11 @@ public class DbManager extends EntityManager{
                         Ship tmpShip = (Ship)field.get(instance);
                         connection.insertShipIntoDb(tmpShip.getName(), tmpShip.getX(), tmpShip.getY());
                     }
+
+                    if(field.getType().isAssignableFrom(University.class)) {
+                        University tmpUniv = (University)field.get(instance);
+                        connection.insertUniversityIntoDb(tmpUniv);
+                    }
                 }
             }
         }
@@ -82,11 +88,12 @@ public class DbManager extends EntityManager{
                         Ship tmpShip = connection.getShipFromDb(field.getAnnotation(RootElement.class).name());
                         field.set(instance,tmpShip);
                     }
-
+                    if(field.getType().isAssignableFrom(University.class)) {
+                        University tmpUniv = connection.getUniversityFromDb(field.getAnnotation(RootElement.class).name());
+                        field.set(instance,tmpUniv);
+                    }
                 }
             }
         }
     }
-
-
 }

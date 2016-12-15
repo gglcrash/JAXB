@@ -1,4 +1,4 @@
-package com.netcracker.jaxb.templates;
+package com.netcracker.jaxb.templates.case1;
 
 import com.netcracker.jaxb.annotations.Component;
 
