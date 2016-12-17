@@ -4,8 +4,13 @@ import com.netcracker.jaxb.templates.case1.Ship;
 import com.netcracker.jaxb.templates.case2.Contacts;
 import com.netcracker.jaxb.templates.case2.Rector;
 import com.netcracker.jaxb.templates.case2.University;
+import com.netcracker.jaxb.templates.case3.AbstractFigure;
+import com.netcracker.jaxb.templates.case3.Circle;
+import com.netcracker.jaxb.templates.case3.Rectangle;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyConnection {
 
@@ -14,19 +19,20 @@ public class MyConnection {
     private String name;
     private String password;
     private static MyConnection instance = null;
-    public static MyConnection getInstance(String conn){
-        if(instance == null){
+
+    public static MyConnection getInstance(String conn) {
+        if (instance == null) {
             instance = new MyConnection(conn);
         }
         return instance;
     }
 
-    private MyConnection(String conn){
+    private MyConnection(String conn) {
         String[] splited = conn.split("\\s+");
 
         url = splited[0];
         name = splited[1];
-        if(splited.length>2) {
+        if (splited.length > 2) {
             password = splited[2];
         }
     }
@@ -42,26 +48,30 @@ public class MyConnection {
         }
     }
 
-    public void insertShipIntoDb(String name, int x, int y){
+    private void dropConnection() {
+        connection = null;
+    }
+
+
+    public void insertShipIntoDb(Ship ship) {
         try {
             setConnection();
 
             PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement(
                     "insert into ships(name,x,y) values(?,?,?)");
-            preparedStatement.setString(1, name);
-            preparedStatement.setInt(2, x);
-            preparedStatement.setInt(3, y);
+            preparedStatement.setString(1, ship.getName());
+            preparedStatement.setInt(2, ship.getX());
+            preparedStatement.setInt(3, ship.getY());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             dropConnection();
         }
     }
 
-    public Ship getShipFromDb(String name){
+    public Ship getShipFromDb(String name) {
         Ship ship = new Ship().setName("noname").setX(0).setY(0);
         try {
             setConnection();
@@ -72,7 +82,7 @@ public class MyConnection {
 
             preparedStatement.setString(1, name);
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next()) {
+            if (result.next()) {
                 return ship.setName(result.getString("name")).setX(result.getInt("x")).setY(result.getInt("y"));
             } else {
                 return ship;
@@ -85,7 +95,7 @@ public class MyConnection {
         return ship;
     }
 
-    public void insertUniversityIntoDb(University university){
+    public void insertUniversityIntoDb(University university) {
         try {
             setConnection();
 
@@ -98,13 +108,12 @@ public class MyConnection {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             dropConnection();
         }
     }
 
-    private int insertRectorIntoDb(Rector rector){
+    private int insertRectorIntoDb(Rector rector) {
         try {
             setConnection();
 
@@ -120,14 +129,13 @@ public class MyConnection {
             return rs.getInt(1);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             dropConnection();
         }
         return 0;
     }
 
-    private int insertContactsIntoDb(Contacts contacts){
+    private int insertContactsIntoDb(Contacts contacts) {
         try {
             setConnection();
 
@@ -141,14 +149,13 @@ public class MyConnection {
             return rs.getInt(1);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             dropConnection();
         }
         return 0;
     }
 
-    public University getUniversityFromDb(String name){
+    public University getUniversityFromDb(String name) {
         University university = new University().setName("noname").setRector(
                 new Rector().setName("norector").setSurname("nosurname").setContacts(
                         new Contacts().setMobile_number("nonumber").setEmail("nomail")));
@@ -156,12 +163,17 @@ public class MyConnection {
             setConnection();
 
             PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM universities where name = ?");
+            if (!name.equals("")) {
+                preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM universities where name = ?");
 
-            preparedStatement.setString(1, name);
+                preparedStatement.setString(1, name);
+            } else {
+                preparedStatement = connection.prepareStatement("SELECT * FROM universities " +
+                        "where id_university = (select max(id_university) from universities )");
+            }
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next()) {
+            if (result.next()) {
                 Rector rector = getRectorFromDb(result.getInt("id_rector"));
                 university.setName(result.getString("name")).setRector(rector);
             } else {
@@ -175,7 +187,7 @@ public class MyConnection {
         return university;
     }
 
-    private Rector getRectorFromDb(int id_rector){
+    private Rector getRectorFromDb(int id_rector) {
         Rector rector = new Rector();
         try {
             setConnection();
@@ -186,7 +198,7 @@ public class MyConnection {
 
             preparedStatement.setInt(1, id_rector);
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next()) {
+            if (result.next()) {
                 Contacts cont = getContactsFromDb(result.getInt("id_contacts"));
                 rector.setName(result.getString("name")).setSurname(result.getString("surname")).setContacts(cont);
             } else {
@@ -200,7 +212,7 @@ public class MyConnection {
         return rector;
     }
 
-    private Contacts getContactsFromDb(int id_contacts){
+    private Contacts getContactsFromDb(int id_contacts) {
         Contacts cont = new Contacts();
         try {
             setConnection();
@@ -211,7 +223,7 @@ public class MyConnection {
 
             preparedStatement.setInt(1, id_contacts);
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next()) {
+            if (result.next()) {
                 cont.setMobile_number(result.getString("mobile_number")).setEmail(result.getString("email"));
             } else {
                 return cont;
@@ -224,7 +236,85 @@ public class MyConnection {
         return cont;
     }
 
-    private void dropConnection(){
-        connection = null;
+    public void insertCircleIntoDb(Circle circle) {
+        try {
+            setConnection();
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(
+                    "insert into circles(x,y,radius) values(?,?,?)");
+            preparedStatement.setInt(1, circle.getX());
+            preparedStatement.setInt(2, circle.getY());
+            preparedStatement.setInt(3, circle.getRadius());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dropConnection();
+        }
+    }
+
+    public void insertRectangleIntoDb(Rectangle rect) {
+        try {
+            setConnection();
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(
+                    "insert into rectangles(x,y,height,weight) values(?,?,?,?)");
+            preparedStatement.setInt(1, rect.getX());
+            preparedStatement.setInt(2, rect.getY());
+            preparedStatement.setInt(3, rect.getHeight());
+            preparedStatement.setInt(4, rect.getWeight());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dropConnection();
+        }
+    }
+
+    public ArrayList<AbstractFigure> getListAbstractFigureFromDb() {
+        ArrayList<AbstractFigure> myList = new ArrayList<AbstractFigure>();
+        getCirclesFromDb(myList);
+        getRectanglesFromDb(myList);
+        return myList;
+    }
+
+    private void getRectanglesFromDb(ArrayList<AbstractFigure> myList) {
+        try {
+            setConnection();
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM rectangles");
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                myList.add(new Rectangle().setHeight(result.getInt("height")).setWeight(result.getInt("weight" +
+                        "")).setX(result.getInt("x")).setY(result.getInt("y")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dropConnection();
+        }
+    }
+
+    private void getCirclesFromDb(ArrayList<AbstractFigure> myList) {
+        try {
+            setConnection();
+
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM circles");
+
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                myList.add(new Circle().setRadius(result.getInt("radius")).setX(result.getInt("x")).setY(result.getInt("y")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dropConnection();
+        }
     }
 }

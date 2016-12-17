@@ -7,41 +7,31 @@ import com.netcracker.jaxb.templates.case2.Rector;
 import com.netcracker.jaxb.templates.case2.University;
 
 public class Example {
-    Ship writeShip1;
 
-    Ship writeShip2;
-
-    Ship loadShip;
-
-    University univer;
-
-    @RootElement(name = "VSU")
-    University loadUiver;
+    EntityManager ent = EntityManager.getInstance(getDbConnectionString(), ConnectionType.DB);
 
     public void start() {
 
-        /*writeShip1 = new Ship().setName("Fast").setX(15).setY(25);
-        writeShip2 = new Ship().setName("Fastest2").setX(47).setY(40);
-*/
+        TestCase1 testCase1 = new TestCase1(ent);
 
-        univer = new University().setName("VSU").setRector(new Rector().setName("Andrey").setSurname("Petrov").setContacts(
-                new Contacts().setMobile_number("8-919-108-33-28").setEmail("lala@yandex.ru")));
+        //testCase1.testCase1WriteToDb();
 
+        //testCase1.testCase1LoadFromDb();
 
-        EntityManager ent = EntityManager.getInstance(getDbConnectionString(), ConnectionType.DB);
-        ent.unmarshall(this);
-        //ent.marshall(this);
-        System.out.println("University: "+loadUiver.getName());
-        System.out.println("Rector name: "+loadUiver.getRector().getName());
-        System.out.println("Rector surname: "+loadUiver.getRector().getSurname());
-        System.out.println("Rector number: "+loadUiver.getRector().getContacts().getMobile_number());
-        System.out.println("Rector email: "+loadUiver.getRector().getContacts().getEmail());
+        TestCase2 testCase2 = new TestCase2(ent);
 
-      /*  System.out.println("Ship name: "+loadShip.getName()+"\n");
-        System.out.println("X coordinate: "+loadShip.getX()+"\n");
-        System.out.println("Y coordinate: "+loadShip.getY()+"\n");*/
+        //testCase2.testCase2WriteToDb();
 
+        //testCase2.testCase2LoadFromDb();
+
+        TestCase3 testCase3 = new TestCase3(ent);
+
+        //testCase3.testCase2WriteToDb();
+
+        testCase3.testCase2LoadFromDb();
     }
+
+
 
     private String getDbConnectionString(){
         String url = "jdbc:postgresql://localhost:5432/JAXB";

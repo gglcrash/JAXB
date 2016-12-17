@@ -5,10 +5,15 @@ import com.netcracker.jaxb.annotations.RootElement;
 import com.netcracker.jaxb.jdbc.MyConnection;
 import com.netcracker.jaxb.templates.case1.Ship;
 import com.netcracker.jaxb.templates.case2.University;
+import com.netcracker.jaxb.templates.case3.AbstractFigure;
+import com.netcracker.jaxb.templates.case3.Circle;
+import com.netcracker.jaxb.templates.case3.Rectangle;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DbManager extends EntityManager{
     private String path;
@@ -47,12 +52,25 @@ public class DbManager extends EntityManager{
 
                     if(field.getType().isAssignableFrom(Ship.class)) {
                         Ship tmpShip = (Ship)field.get(instance);
-                        connection.insertShipIntoDb(tmpShip.getName(), tmpShip.getX(), tmpShip.getY());
+                        connection.insertShipIntoDb(tmpShip);
                     }
 
                     if(field.getType().isAssignableFrom(University.class)) {
                         University tmpUniv = (University)field.get(instance);
                         connection.insertUniversityIntoDb(tmpUniv);
+                    }
+                }
+
+                if(field.getType().isAssignableFrom(List.class)){
+                    field.setAccessible(true);
+                    List tmpList = (List)field.get(instance);
+                    for (Object elem : tmpList) {
+                        if (elem.getClass().isAssignableFrom(Circle.class)) {
+                            connection.insertCircleIntoDb((Circle) elem);
+                        }
+                        if (elem.getClass().isAssignableFrom(Rectangle.class)) {
+                            connection.insertRectangleIntoDb((Rectangle) elem);
+                        }
                     }
                 }
             }
@@ -92,6 +110,11 @@ public class DbManager extends EntityManager{
                         University tmpUniv = connection.getUniversityFromDb(field.getAnnotation(RootElement.class).name());
                         field.set(instance,tmpUniv);
                     }
+                }
+                if(field.getType().isAssignableFrom(List.class)){
+                    ArrayList<AbstractFigure> tmpList = connection.getListAbstractFigureFromDb();
+                    field.setAccessible(true);
+                    field.set(instance,tmpList);
                 }
             }
         }
