@@ -77,10 +77,16 @@ public class MyConnection {
             setConnection();
 
             PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM ships where name = ?");
 
-            preparedStatement.setString(1, name);
+            if (!name.equals("")) {
+                preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM ships where name = ?");
+
+                preparedStatement.setString(1, name);
+            } else {
+                preparedStatement = connection.prepareStatement("SELECT * FROM ships " +
+                        "where id_ship = (select max(id_ship) from ships )");
+            }
             ResultSet result = preparedStatement.executeQuery();
             if (result.next()) {
                 return ship.setName(result.getString("name")).setX(result.getInt("x")).setY(result.getInt("y"));

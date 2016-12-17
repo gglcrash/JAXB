@@ -14,13 +14,13 @@ public class TestCase1 {
     @RootElement
     Ship writeShip2;
     public void testCase1WriteToDb(){
-        writeShip1 = new Ship().setName("Fast").setX(15).setY(25);
-        writeShip2 = new Ship().setName("Fastest2").setX(47).setY(40);
+        writeShip1 = new Ship().setName("Forward").setX(20).setY(35);
+        writeShip2 = new Ship().setName("Swim2").setX(25).setY(12);
 
         ent.marshall(this);
     }
 
-    @RootElement(name="Swimmer")
+    @RootElement(name="Fast")
     Ship loadShip;
     public void testCase1LoadFromDb(){
         ent.unmarshall(this);

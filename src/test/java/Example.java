@@ -16,7 +16,7 @@ public class Example {
 
         //testCase1.testCase1WriteToDb();
 
-        //testCase1.testCase1LoadFromDb();
+        testCase1.testCase1LoadFromDb();
 
         TestCase2 testCase2 = new TestCase2(ent);
 
@@ -28,7 +28,7 @@ public class Example {
 
         //testCase3.testCase2WriteToDb();
 
-        testCase3.testCase2LoadFromDb();
+        //testCase3.testCase2LoadFromDb();
     }
 
 
