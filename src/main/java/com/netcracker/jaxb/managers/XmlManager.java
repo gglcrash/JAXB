@@ -67,8 +67,9 @@ public class XmlManager extends EntityManager {
 
         if(clazz.isAnnotationPresent(Component.class)) {
             Field[] fields = clazz.getDeclaredFields();
-            //TODO: Add custom name
-            Element root = setCurrentElement(clazz, object);
+            Component com = (Component)clazz.getAnnotation(Component.class);
+
+            Element root = setCurrentElement((com.value()!="")?com.value():clazz.getName(), object);
 
             try {
                 for (Field f : fields) {
@@ -99,8 +100,8 @@ public class XmlManager extends EntityManager {
 
     }
 
-    private Element setCurrentElement(Class<?> clazz, Object object){
-        Element root = doc.createElement(clazz.getName());
+    private Element setCurrentElement(String name, Object object){
+        Element root = doc.createElement(name);
 
         objectMap.put(object, root);
         if (currentElement == null) {
@@ -119,7 +120,7 @@ public class XmlManager extends EntityManager {
     }
 
     private void handleCollection(Collection col) {
-        Element root = setCurrentElement(col.getClass(), col);
+        Element root = setCurrentElement(col.getClass().getName(), col);
 
         for (Object obj: col) {
             start(obj);
