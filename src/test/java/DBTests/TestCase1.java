@@ -1,4 +1,6 @@
-import com.netcracker.jaxb.annotations.RootElement;
+package DBTests;
+
+import com.netcracker.jaxb.annotations.JaxbElement;
 import com.netcracker.jaxb.managers.EntityManager;
 import com.netcracker.jaxb.templates.case1.Ship;
 
@@ -9,9 +11,9 @@ public class TestCase1 {
     }
 
 
-    @RootElement
+    @JaxbElement
     Ship writeShip1;
-    @RootElement
+    @JaxbElement
     Ship writeShip2;
     public void testCase1WriteToDb(){
         writeShip1 = new Ship().setName("Forward").setX(20).setY(35);
@@ -20,7 +22,7 @@ public class TestCase1 {
         ent.marshall(this);
     }
 
-    @RootElement(name="Fast")
+    @JaxbElement(name="Fast")
     Ship loadShip;
     public void testCase1LoadFromDb(){
         ent.unmarshall(this);

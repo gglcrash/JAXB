@@ -1,4 +1,6 @@
-import com.netcracker.jaxb.annotations.RootElement;
+package DBTests;
+
+import com.netcracker.jaxb.annotations.JaxbElement;
 import com.netcracker.jaxb.managers.EntityManager;
 import com.netcracker.jaxb.templates.case2.Contacts;
 import com.netcracker.jaxb.templates.case2.Rector;
@@ -10,7 +12,7 @@ public class TestCase2 {
         ent = entity;
     }
 
-    @RootElement
+    @JaxbElement
     University univer;
     public void testCase2WriteToDb(){
         univer = new University().setName("VSTU").setRector(new Rector().setName("Vasisualii").setSurname("Memk").setContacts(
@@ -19,7 +21,7 @@ public class TestCase2 {
         ent.marshall(this);
     }
 
-    @RootElement(name = "VSU")
+    @JaxbElement(name = "VSU")
     University loadUniver=null;
     public void testCase2LoadFromDb(){
         ent.unmarshall(this);

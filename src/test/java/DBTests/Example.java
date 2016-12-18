@@ -1,10 +1,7 @@
-import com.netcracker.jaxb.annotations.RootElement;
+package DBTests;
+
 import com.netcracker.jaxb.managers.ConnectionType;
 import com.netcracker.jaxb.managers.EntityManager;
-import com.netcracker.jaxb.templates.case1.Ship;
-import com.netcracker.jaxb.templates.case2.Contacts;
-import com.netcracker.jaxb.templates.case2.Rector;
-import com.netcracker.jaxb.templates.case2.University;
 
 public class Example {
 

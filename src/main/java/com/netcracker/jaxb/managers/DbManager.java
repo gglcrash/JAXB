@@ -1,7 +1,7 @@
 package com.netcracker.jaxb.managers;
 
 import com.netcracker.jaxb.ApplicationContext;
-import com.netcracker.jaxb.annotations.RootElement;
+import com.netcracker.jaxb.annotations.JaxbElement;
 import com.netcracker.jaxb.jdbc.MyConnection;
 import com.netcracker.jaxb.templates.case1.Ship;
 import com.netcracker.jaxb.templates.case2.University;
@@ -45,7 +45,7 @@ public class DbManager extends EntityManager{
         Field[] fields = cl.getDeclaredFields();
 
         for (Field field : fields) {
-            if (field.isAnnotationPresent(RootElement.class)) {
+            if (field.isAnnotationPresent(JaxbElement.class)) {
                 if (((HashMap) ApplicationContext.getInstance().getComponents()).containsValue(field.getType())) {
 
                     field.setAccessible(true);
@@ -97,17 +97,17 @@ public class DbManager extends EntityManager{
         Field[] fields = cl.getDeclaredFields();
 
         for (Field field : fields) {
-            if (field.isAnnotationPresent(RootElement.class)) {
+            if (field.isAnnotationPresent(JaxbElement.class)) {
                 if (((HashMap) ApplicationContext.getInstance().getComponents()).containsValue(field.getType())) {
 
                     field.setAccessible(true);
 
                     if(field.getType().isAssignableFrom(Ship.class)) {
-                        Ship tmpShip = connection.getShipFromDb(field.getAnnotation(RootElement.class).name());
+                        Ship tmpShip = connection.getShipFromDb(field.getAnnotation(JaxbElement.class).name());
                         field.set(instance,tmpShip);
                     }
                     if(field.getType().isAssignableFrom(University.class)) {
-                        University tmpUniv = connection.getUniversityFromDb(field.getAnnotation(RootElement.class).name());
+                        University tmpUniv = connection.getUniversityFromDb(field.getAnnotation(JaxbElement.class).name());
                         field.set(instance,tmpUniv);
                     }
                 }

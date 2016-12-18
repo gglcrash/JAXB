@@ -1,4 +1,6 @@
-import com.netcracker.jaxb.annotations.RootElement;
+package DBTests;
+
+import com.netcracker.jaxb.annotations.JaxbElement;
 import com.netcracker.jaxb.managers.EntityManager;
 import com.netcracker.jaxb.templates.case3.AbstractFigure;
 import com.netcracker.jaxb.templates.case3.Circle;
@@ -13,7 +15,7 @@ public class TestCase3 {
         ent = entity;
     }
 
-    @RootElement
+    @JaxbElement
     List<AbstractFigure> list = new ArrayList<AbstractFigure>();
     public void testCase2WriteToDb(){
         list.add(new Circle().setRadius(3).setX(2).setY(55));
@@ -23,7 +25,7 @@ public class TestCase3 {
         ent.marshall(this);
     }
 
-    @RootElement
+    @JaxbElement
     List<AbstractFigure> loadList;
     public void testCase2LoadFromDb(){
         ent.unmarshall(this);
