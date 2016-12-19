@@ -18,6 +18,9 @@ public class Person {
     @JaxbElement
     private int age;
 
+    public Person(){
+
+    }
 
     public Person(String firstName, String middleName, String lastName, int age) {
         this.firstName = firstName;
