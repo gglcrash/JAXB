@@ -13,14 +13,14 @@ import java.util.Stack;
 /**
  * Created by Никита on 18.12.2016.
  */
-public class JaxbHandler extends DefaultHandler{
+public class JaxbHandler extends DefaultHandler {
 
     Object object;
     Class<?> clazz;
     Stack<Field> stack;
     Stack<Object> objStack;
 
-    public JaxbHandler(Object object){
+    public JaxbHandler(Object object) {
         this.object = object;
         this.clazz = object.getClass();
         this.stack = new Stack<Field>();
@@ -29,17 +29,16 @@ public class JaxbHandler extends DefaultHandler{
     private CharArrayWriter contents = new CharArrayWriter();
 
     @Override
-    public void startElement( String namespaceURI,
-                              String localName,
-                              String qName,
-                              Attributes attr ) {
+    public void startElement(String namespaceURI,
+                             String localName,
+                             String qName,
+                             Attributes attr) {
         contents.reset();
         try {
             stack.add(clazz.getDeclaredField(localName));
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //TODO: something
         }
-        int i = 0;
     }
 
     private Object convert(Class<?> targetType, String text) {
@@ -51,17 +50,18 @@ public class JaxbHandler extends DefaultHandler{
     @Override
     public void endElement(String uri,
                            String localName, String qName) {
-        if(!stack.empty()) {
-
+        if (!stack.empty()) {
             Field f = stack.pop();
             String s = contents.toString();
             try {
-                f.setAccessible(true);
+                boolean flag = f.isAccessible();
+                if (!flag)
+                    f.setAccessible(true);
 
 
                 f.set(object, convert(f.getType(), s));
-
-                f.setAccessible(false);
+                if (!flag)
+                    f.setAccessible(false);
             } catch (IllegalAccessException e) {
 
 
@@ -74,9 +74,9 @@ public class JaxbHandler extends DefaultHandler{
 
     @Override
     public void characters(char ch[],
-                           int start, int length){
+                           int start, int length) {
 
-            //TODO: maybe add attribute type and then can use it to cast this shit to it's object
+        //TODO: maybe add attribute type and then can use it to cast this shit to it's object
         contents.write(ch, start, length);
         int i = 0;
     }
