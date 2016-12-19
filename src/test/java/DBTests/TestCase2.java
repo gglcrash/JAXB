@@ -13,7 +13,7 @@ public class TestCase2 {
     }
 
     @JaxbElement
-    University univer;
+    public University univer;
     public void testCase2WriteToDb(){
         univer = new University().setName("VSTU").setRector(new Rector().setName("Vasisualii").setSurname("Memk").setContacts(
                 new Contacts().setMobile_number("8-9101521-332").setEmail("newmail@yandex.ru")));
@@ -22,7 +22,7 @@ public class TestCase2 {
     }
 
     @JaxbElement(name = "VSU")
-    University loadUniver=null;
+    public University loadUniver=null;
     public void testCase2LoadFromDb(){
         ent.unmarshall(this);
 

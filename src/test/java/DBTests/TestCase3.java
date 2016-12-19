@@ -16,17 +16,15 @@ public class TestCase3 {
     }
 
     @JaxbElement
-    List<AbstractFigure> list = new ArrayList<AbstractFigure>();
+    public List<AbstractFigure> list = new ArrayList<AbstractFigure>();
     public void testCase2WriteToDb(){
         list.add(new Circle().setRadius(3).setX(2).setY(55));
         list.add(new Rectangle().setHeight(32).setWeight(35).setX(12).setY(42));
-        list.add(new Circle().setRadius(37).setX(14).setY(22));
-        list.add(new Rectangle().setHeight(27).setWeight(16).setX(23).setY(74));
         ent.marshall(this);
     }
 
     @JaxbElement
-    List<AbstractFigure> loadList;
+    public List<AbstractFigure> loadList;
     public void testCase2LoadFromDb(){
         ent.unmarshall(this);
 

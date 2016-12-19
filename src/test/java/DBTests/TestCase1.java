@@ -12,18 +12,15 @@ public class TestCase1 {
 
 
     @JaxbElement
-    Ship writeShip1;
-    @JaxbElement
-    Ship writeShip2;
+    public Ship writeShip;
     public void testCase1WriteToDb(){
-        writeShip1 = new Ship().setName("Forward").setX(20).setY(35);
-        writeShip2 = new Ship().setName("Swim2").setX(25).setY(12);
+        writeShip = new Ship().setName("Forward").setX(20).setY(35);
 
         ent.marshall(this);
     }
 
-    @JaxbElement(name="Fast")
-    Ship loadShip;
+    @JaxbElement(name="Swimmer")
+    public Ship loadShip;
     public void testCase1LoadFromDb(){
         ent.unmarshall(this);
 

@@ -44,8 +44,9 @@ public class DbManager extends EntityManager{
 
         Field[] fields = cl.getDeclaredFields();
 
+
         for (Field field : fields) {
-            if (field.isAnnotationPresent(JaxbElement.class)) {
+            if (field.isAnnotationPresent(JaxbElement.class) && field.get(instance)!=null) {
                 if (((HashMap) ApplicationContext.getInstance().getComponents()).containsValue(field.getType())) {
 
                     field.setAccessible(true);
