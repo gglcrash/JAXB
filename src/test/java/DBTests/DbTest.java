@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class DbTest {
     @Test
-    public static void RunDBTestForExamples (String[] args){
+    public void RunDBTestForExamples (){
         Example example = new Example();
         example.start();
     }
