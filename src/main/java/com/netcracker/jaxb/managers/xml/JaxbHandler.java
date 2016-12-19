@@ -4,6 +4,8 @@ import jdk.internal.org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.io.CharArrayWriter;
 import java.lang.reflect.Field;
 import java.util.Stack;
@@ -40,20 +42,32 @@ public class JaxbHandler extends DefaultHandler{
         int i = 0;
     }
 
+    private Object convert(Class<?> targetType, String text) {
+        PropertyEditor editor = PropertyEditorManager.findEditor(targetType);
+        editor.setAsText(text);
+        return editor.getValue();
+    }
+
     @Override
     public void endElement(String uri,
                            String localName, String qName) {
-        Field f = stack.pop();
-        String s = contents.toString();
-        try {
-            f.setAccessible(true);
-            f.set(object, s);
-            f.setAccessible(false);
-        } catch (IllegalAccessException e) {
+        if(!stack.empty()) {
+
+            Field f = stack.pop();
+            String s = contents.toString();
+            try {
+                f.setAccessible(true);
 
 
+                f.set(object, convert(f.getType(), s));
+
+                f.setAccessible(false);
+            } catch (IllegalAccessException e) {
+
+
+            }
+            int i = 0;
         }
-        int i = 0;
 
     }
 

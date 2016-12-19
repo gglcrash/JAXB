@@ -14,11 +14,11 @@ import java.util.List;
 public class XmlUnmarshallingTest {
 
     @Test
-    public void unmarshallXmlToPerson(){
+    public void unmarshallXmlToSimpleClassPerson(){
         EntityManager entityManager = EntityManager.getInstance("example.xml", ConnectionType.XML);
         Person person = new Person();
         entityManager.unmarshall(person);
-
+        System.out.println("");
     }
 
     @Test
