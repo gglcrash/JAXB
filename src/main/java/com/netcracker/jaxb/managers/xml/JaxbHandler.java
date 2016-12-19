@@ -1,6 +1,5 @@
 package com.netcracker.jaxb.managers.xml;
 
-import jdk.internal.org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -10,9 +9,7 @@ import java.io.CharArrayWriter;
 import java.lang.reflect.Field;
 import java.util.Stack;
 
-/**
- * Created by Никита on 18.12.2016.
- */
+
 public class JaxbHandler extends DefaultHandler {
 
     Object object;

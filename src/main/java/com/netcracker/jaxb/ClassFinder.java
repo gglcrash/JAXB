@@ -31,8 +31,7 @@ public class ClassFinder {
                     className = pkgname.substring(9) + '.' + fileName.substring(0, fileName.length() - 6);
                 }
                 if(pkgname.startsWith(".test-classes")){
-                    className = fileName.substring(0, fileName.length() - 6);
-                    int x = 2;
+                    className = pkgname.substring(14) + '.' + fileName.substring(0, fileName.length() - 6);
                 }
             }
 

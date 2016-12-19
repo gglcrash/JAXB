@@ -78,14 +78,13 @@ public class MyConnection {
 
             PreparedStatement preparedStatement;
 
-            if (!name.equals("")) {
-                preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM ships where name = ?");
-
-                preparedStatement.setString(1, name);
-            } else {
+            if (name.equals("")) {
                 preparedStatement = connection.prepareStatement("SELECT * FROM ships " +
                         "where id_ship = (select max(id_ship) from ships )");
+            } else {
+                preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM ships where name = ?");
+                preparedStatement.setString(1, name);
             }
             ResultSet result = preparedStatement.executeQuery();
             if (result.next()) {
@@ -169,14 +168,13 @@ public class MyConnection {
             setConnection();
 
             PreparedStatement preparedStatement;
-            if (!name.equals("")) {
-                preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM universities where name = ?");
-
-                preparedStatement.setString(1, name);
-            } else {
+            if (name.equals("")) {
                 preparedStatement = connection.prepareStatement("SELECT * FROM universities " +
                         "where id_university = (select max(id_university) from universities )");
+            } else {
+                preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM universities where name = ?");
+                preparedStatement.setString(1, name);
             }
             ResultSet result = preparedStatement.executeQuery();
             if (result.next()) {
