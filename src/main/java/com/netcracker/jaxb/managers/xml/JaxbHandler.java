@@ -14,13 +14,13 @@ public class JaxbHandler extends DefaultHandler {
 
     Object object;
     Class<?> clazz;
-    Stack<Field> stack;
     Stack<Object> objStack;
+
 
     public JaxbHandler(Object object) {
         this.object = object;
         this.clazz = object.getClass();
-        this.stack = new Stack<Field>();
+        objStack = new Stack<Object>();
     }
 
     private CharArrayWriter contents = new CharArrayWriter();
@@ -31,10 +31,28 @@ public class JaxbHandler extends DefaultHandler {
                              String qName,
                              Attributes attr) {
         contents.reset();
-        try {
-            stack.add(clazz.getDeclaredField(localName));
-        } catch (NoSuchFieldException e) {
-            //TODO: something
+        boolean empty = objStack.empty();
+        objStack.push(object);
+        if (!empty) {
+            try {
+                Field f = object.getClass().getDeclaredField(localName);
+                boolean flag = f.isAccessible();
+                if (!flag)
+                    f.setAccessible(true);
+                if (f.getType().isPrimitive())
+                    object = new Object();
+                else
+                    object = f.getType().newInstance();
+                if (!flag)
+                    f.setAccessible(false);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -47,22 +65,26 @@ public class JaxbHandler extends DefaultHandler {
     @Override
     public void endElement(String uri,
                            String localName, String qName) {
-        if (!stack.empty()) {
-            Field f = stack.pop();
+        if (!objStack.empty()) {
             String s = contents.toString();
+            object = objStack.pop();
+
             try {
+                Field f = object.getClass().getDeclaredField(localName);
+
                 boolean flag = f.isAccessible();
                 if (!flag)
                     f.setAccessible(true);
-
-
                 f.set(object, convert(f.getType(), s));
                 if (!flag)
                     f.setAccessible(false);
+
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
             } catch (IllegalAccessException e) {
-
-
+                e.printStackTrace();
             }
+
             int i = 0;
         }
 
@@ -72,8 +94,6 @@ public class JaxbHandler extends DefaultHandler {
     @Override
     public void characters(char ch[],
                            int start, int length) {
-
-        //TODO: maybe add attribute type and then can use it to cast this shit to it's object
         contents.write(ch, start, length);
         int i = 0;
     }
