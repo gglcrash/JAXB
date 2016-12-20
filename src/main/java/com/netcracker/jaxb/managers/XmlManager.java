@@ -36,6 +36,8 @@ public class XmlManager extends EntityManager {
     Map<Object, Element> objectMap;
     Node currentElement;
 
+    String cName;
+
     public XmlManager(String str) {
         path = str;
         objectMap = new HashMap<Object, Element>();
@@ -116,6 +118,7 @@ public class XmlManager extends EntityManager {
                             e.appendChild(doc.createTextNode(obj.toString()));
                             root.appendChild(e);
                         } else {
+                            cName = f.getName();
                             start(f.get(object));
                         }
                         if (!flag)
@@ -152,7 +155,11 @@ public class XmlManager extends EntityManager {
 
     private void handleCollection(Collection col) {
 
-        Element root = setCurrentElement("Item", col);
+        Element root = setCurrentElement("Items", col);
+
+        Attr attr = doc.createAttribute("cname");
+        attr.setValue(cName);
+        root.setAttributeNode(attr);
 
         setTypeAttr(col.getClass(), root);
 
