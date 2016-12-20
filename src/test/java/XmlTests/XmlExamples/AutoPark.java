@@ -15,6 +15,10 @@ public class AutoPark {
     @JaxbElement
     List<Car> cars;
 
+    public AutoPark(){
+
+    }
+
     public AutoPark(List<Person> drivers, List<Car> cars){
         this.cars = cars;
         this.drivers = drivers;

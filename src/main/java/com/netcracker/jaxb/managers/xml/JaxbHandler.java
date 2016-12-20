@@ -7,6 +7,7 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.io.CharArrayWriter;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Stack;
 
 
@@ -34,6 +35,26 @@ public class JaxbHandler extends DefaultHandler {
         boolean empty = objStack.empty();
         objStack.push(object);
         if (!empty) {
+            if (localName.compareTo("Items") == 0) {
+                try {
+                    initObjects(attr.getValue("cname"), Class.forName(attr.getValue("type")));
+
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                type = attr.getValue("type");
+                initObjects(localName, null);
+            }
+
+        }
+    }
+
+    private String type;
+
+    private void initObjects(String localName, Class<?> colClazz) {
+
+        if (!Collection.class.isAssignableFrom(object.getClass())) {
             try {
                 Field f = object.getClass().getDeclaredField(localName);
                 boolean flag = f.isAccessible();
@@ -41,7 +62,9 @@ public class JaxbHandler extends DefaultHandler {
                     f.setAccessible(true);
                 if (f.getType().isPrimitive())
                     object = new Object();
-                else
+                else if (colClazz != null) {
+                    object = colClazz.newInstance();
+                } else
                     object = f.getType().newInstance();
                 if (!flag)
                     f.setAccessible(false);
@@ -52,9 +75,19 @@ public class JaxbHandler extends DefaultHandler {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-
+        } else {
+            try {
+                object = Class.forName(type).newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     private Object convert(Class<?> targetType, String text) {
         PropertyEditor editor = PropertyEditorManager.findEditor(targetType);
@@ -65,27 +98,17 @@ public class JaxbHandler extends DefaultHandler {
     @Override
     public void endElement(String uri,
                            String localName, String qName) {
-        if (!objStack.empty()) {
+        if (objStack.size() > 1) {
             String s = contents.toString();
+            Object tmpObj = object;
             object = objStack.pop();
 
-            try {
-                Field f = object.getClass().getDeclaredField(localName);
+            if (Collection.class.isAssignableFrom(object.getClass())) {
+                Collection col = (Collection) object;
+                col.add(tmpObj);
+            } else
+                fillSimpleFields(localName, s);
 
-                boolean flag = f.isAccessible();
-                if (!flag)
-                    f.setAccessible(true);
-                f.set(object, convert(f.getType(), s));
-                if (!flag)
-                    f.setAccessible(false);
-
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            int i = 0;
         }
 
     }
@@ -96,6 +119,25 @@ public class JaxbHandler extends DefaultHandler {
                            int start, int length) {
         contents.write(ch, start, length);
         int i = 0;
+    }
+
+    private void fillSimpleFields(String localName, String s) {
+
+        try {
+            Field f = object.getClass().getDeclaredField(localName);
+
+            boolean flag = f.isAccessible();
+            if (!flag)
+                f.setAccessible(true);
+            f.set(object, convert(f.getType(), s));
+            if (!flag)
+                f.setAccessible(false);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 }
