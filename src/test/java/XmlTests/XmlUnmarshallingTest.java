@@ -36,6 +36,7 @@ public class XmlUnmarshallingTest {
         AutoPark autopark = new AutoPark();
         EntityManager entityManager = EntityManager.getInstance("exampleClassWithCollections.xml", ConnectionType.XML);
         entityManager.unmarshall(autopark);
+        int i = 0;
     }
 
 }

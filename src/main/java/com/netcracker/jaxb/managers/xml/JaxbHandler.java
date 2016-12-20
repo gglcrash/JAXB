@@ -16,12 +16,13 @@ public class JaxbHandler extends DefaultHandler {
     Object object;
     Class<?> clazz;
     Stack<Object> objStack;
-
+    Stack<String> cnameStack;
 
     public JaxbHandler(Object object) {
         this.object = object;
         this.clazz = object.getClass();
         objStack = new Stack<Object>();
+        cnameStack = new Stack<String>();
     }
 
     private CharArrayWriter contents = new CharArrayWriter();
@@ -38,7 +39,7 @@ public class JaxbHandler extends DefaultHandler {
             if (localName.compareTo("Items") == 0) {
                 try {
                     initObjects(attr.getValue("cname"), Class.forName(attr.getValue("type")));
-
+                    cnameStack.push(attr.getValue("cname"));
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -98,6 +99,8 @@ public class JaxbHandler extends DefaultHandler {
     @Override
     public void endElement(String uri,
                            String localName, String qName) {
+
+        int i;
         if (objStack.size() > 1) {
             String s = contents.toString();
             Object tmpObj = object;
@@ -106,9 +109,33 @@ public class JaxbHandler extends DefaultHandler {
             if (Collection.class.isAssignableFrom(object.getClass())) {
                 Collection col = (Collection) object;
                 col.add(tmpObj);
-            } else
-                fillSimpleFields(localName, s);
 
+            } else {
+                if (localName.compareTo("Items") == 0) {
+                    fillObjectFields(cnameStack.pop(), tmpObj);
+                } else
+                    fillSimpleFields(localName, s);
+            }
+        } else
+            i = 0;
+
+    }
+
+    private void fillObjectFields(String pop,Object tmpObject) {
+        try {
+            Field f = object.getClass().getDeclaredField(pop);
+
+            boolean flag = f.isAccessible();
+            if (!flag)
+                f.setAccessible(true);
+            f.set(object, tmpObject);
+            if (!flag)
+                f.setAccessible(false);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
 
     }
